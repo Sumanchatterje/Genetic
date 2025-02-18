@@ -11,9 +11,9 @@ print("Starting program...")
 
 # Hardcoded locations (Latitude, Longitude)
 LOCATIONS = {
-    "Start": (22.609372, 88.422594),
-    "Midpoint": (22.611263, 88.425738),
-    "End": (22.623395, 88.417155)
+    "Start": (22.740697, 88.457492),
+    "Midpoint": (22.724759, 88.479110),
+    "End": (22.719399, 88.486519)
 }
 
 print("Locations loaded:", LOCATIONS)
