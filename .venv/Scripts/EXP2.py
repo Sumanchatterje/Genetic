@@ -138,19 +138,9 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
     center_lat = sum(lats) / len(lats)
     center_lon = sum(lons) / len(lons)
 
-    # Create a map centered at the average location - using a more detailed map tile
+    # Create a map centered at the average location - using only OpenStreetMap
     m = folium.Map(location=(center_lat, center_lon), zoom_start=15,
-                   tiles="cartodbpositron")  # More detailed Carto tiles
-
-    # Add layer control and multiple map options
-    folium.TileLayer('cartodbdark_matter', name='Dark Map').add_to(m)
-    folium.TileLayer('openstreetmap', name='OpenStreetMap').add_to(m)
-    folium.TileLayer(
-        'Stamen Terrain',
-        name='Terrain',
-        attr='Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
-    ).add_to(m)
-    folium.LayerControl().add_to(m)
+                   tiles="OpenStreetMap")
 
     # Add a title to the map
     title_html = '''
@@ -159,19 +149,11 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
     '''
     m.get_root().html.add_child(folium.Element(title_html))
 
-    # More distinctive colors with higher contrast
-    colors = ['#0000FF', '#FF0000', '#00CC00', '#AA00AA', '#FF8800', '#00CCCC']
-
-    # Larger, more distinctive icons
-    icon_size = (35, 35)  # Larger icons
+    # Use a single consistent color for the main route
+    route_color = '#FF4500'  # Orange-Red
 
     # Get nearest nodes for all locations
     nearest_nodes = get_nearest_nodes(graph, locations)
-
-    # Debug: Print nearest nodes
-    print("\nNearest nodes for locations:")
-    for name, node_id in nearest_nodes.items():
-        print(f"{name}: {node_id}")
 
     # Add markers for all locations with custom icons
     icons = {
@@ -181,20 +163,17 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
     }
 
     # Use custom markers with more visibility
-    for i, (name, coords) in enumerate(locations.items()):
+    for name, coords in locations.items():
         # Choose icon based on the location name
         icon_name = icons.get(name, 'info-sign')
 
         # Choose color based on position
         if name == "Start":
             color = 'green'
-            icon_color = 'white'
         elif name == "End":
             color = 'red'
-            icon_color = 'white'
         else:
             color = 'blue'
-            icon_color = 'white'
 
         # Create a circular marker with popup
         folium.CircleMarker(
@@ -220,7 +199,10 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
     total_distance = 0
     segments_info = []
 
-    # Calculate and display the route for each segment of the best route
+    # Collect all route coordinates to create a single smooth line
+    all_route_coords = []
+
+    # Calculate and collect coordinates for each segment
     for i in range(len(best_route) - 1):
         # Get start and end points for this segment
         start_idx = best_route[i]
@@ -229,86 +211,36 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
         start_name = location_names[start_idx]
         end_name = location_names[end_idx]
 
-        print(f"\nProcessing route segment: {start_name} to {end_name}")
-
         # Get the nodes for this segment
         start_node = nearest_nodes[start_name]
         end_node = nearest_nodes[end_name]
 
         # Check if nodes are valid
         if start_node is None or end_node is None:
-            print(f"Warning: Invalid nodes for segment {start_name} to {end_name}")
             continue
 
         # Get the route between these nodes
         route_nodes = get_route(graph, start_node, end_node)
         if route_nodes:
-            print(f"Found route with {len(route_nodes)} nodes")
-
             # Get coordinates for this route
             route_coords = get_route_coords(graph, route_nodes)
 
             if route_coords:
                 # Calculate segment distance
                 segment_distance = calculate_route_length(graph, route_nodes)
-                print(f"Segment distance: {segment_distance:.2f} km")
-
                 total_distance += segment_distance
                 segments_info.append(f"{start_name} → {end_name}: {segment_distance:.2f} km")
 
-                # Draw the route segment with a thicker line and arrow decoration
-                path = folium.PolyLine(
-                    route_coords,
-                    weight=6,  # Thicker line
-                    color=colors[i % len(colors)],
-                    opacity=0.9,  # More opaque
-                    tooltip=f"Segment {i + 1}: {start_name} to {end_name} ({segment_distance:.2f} km)",
-                    smoothFactor=1
-                ).add_to(m)
-
-                # Add arrows to show direction
-                folium.plugins.PolyLineTextPath(
-                    path,
-                    text="→",
-                    repeat=True,
-                    offset=8,
-                    attributes={"fill": "#FFFFFF", "font-weight": "bold", "font-size": "24"}
-                ).add_to(m)
-
-                # Add distance label
-                midpoint_idx = len(route_coords) // 2
-                if midpoint_idx < len(route_coords):
-                    midpoint = route_coords[midpoint_idx]
-                    folium.map.Marker(
-                        midpoint,
-                        icon=folium.DivIcon(
-                            icon_size=(150, 20),
-                            icon_anchor=(75, 10),
-                            html=f'<div style="background-color: white; width: 100px; text-align: center; '
-                                 f'border-radius: 10px; padding: 2px 5px; font-weight: bold; opacity: 0.8;">'
-                                 f'{segment_distance:.2f} km</div>'
-                        )
-                    ).add_to(m)
-            else:
-                print(f"Warning: Could not extract coordinates for route")
+                # Add to our complete route coordinates
+                all_route_coords.extend(route_coords)
         else:
-            print(f"Warning: No route found between {start_name} and {end_name}")
+            # Use straight line as fallback
+            lat1, lon1 = locations[start_name]
+            lat2, lon2 = locations[end_name]
 
-            # Try to add a straight line as fallback
-            fallback_coords = [
-                (locations[start_name][0], locations[start_name][1]),
-                (locations[end_name][0], locations[end_name][1])
-            ]
-
-            # Calculate straight-line distance (haversine formula)
             from math import radians, cos, sin, asin, sqrt
-
             def haversine(lon1, lat1, lon2, lat2):
-                """Calculate the great circle distance between two points"""
-                # Convert decimal degrees to radians
                 lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-
-                # Haversine formula
                 dlon = lon2 - lon1
                 dlat = lat2 - lat1
                 a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
@@ -316,23 +248,53 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
                 r = 6371  # Radius of earth in kilometers
                 return c * r
 
-            # Calculate the straight-line distance
-            lat1, lon1 = locations[start_name]
-            lat2, lon2 = locations[end_name]
             segment_distance = haversine(lon1, lat1, lon2, lat2)
-
             total_distance += segment_distance
             segments_info.append(f"{start_name} → {end_name}: {segment_distance:.2f} km (straight line)")
 
-            # Draw a dashed straight line
-            folium.PolyLine(
-                [(lat1, lon1), (lat2, lon2)],
-                weight=4,
-                color=colors[i % len(colors)],
-                opacity=0.8,
-                dash_array='5, 10',
-                tooltip=f"Segment {i + 1}: {start_name} to {end_name} ({segment_distance:.2f} km - approximate)"
+            # Add to our complete route coordinates
+            all_route_coords.extend([(lat1, lon1), (lat2, lon2)])
+
+    # Draw the entire route as a single smooth line
+    if all_route_coords:
+        # Create a single smooth polyline for the entire route
+        folium.PolyLine(
+            all_route_coords,
+            weight=5,  # Thickness
+            color=route_color,
+            opacity=0.9,
+            tooltip="Complete Route",
+            smoothFactor=2.5,  # Higher value = smoother line
+            line_cap='round',  # Rounded ends
+            line_join='round'  # Rounded corners
+        ).add_to(m)
+
+        # Add directional arrows at fewer intervals (every 5th point)
+        arrow_coords = [all_route_coords[i] for i in range(0, len(all_route_coords), 5)]
+        for i in range(len(arrow_coords) - 1):
+            folium.RegularPolygonMarker(
+                location=arrow_coords[i],
+                number_of_sides=3,
+                rotation=45,
+                radius=3,
+                color=route_color,
+                fill=True,
+                fill_color=route_color
             ).add_to(m)
+
+        # # Add distance markers at major points only
+        # for name, coords in locations.items():
+        #     if name not in ['Start', 'End']:  # Only add for intermediate points
+        #         folium.Marker(
+        #             coords,
+        #             icon=folium.DivIcon(
+        #                 icon_size=(100, 20),
+        #                 icon_anchor=(50, 10),
+        #                 html=f'<div style="background-color: white; text-align: center; '
+        #                      f'border-radius: 5px; padding: 2px; font-weight: bold; opacity: 0.8;">'
+        #                      f'{name}</div>'
+        #             )
+        #         ).add_to(m)
 
     # Add a legend with route information
     legend_html = f'''
@@ -355,7 +317,6 @@ def plot_route_folium(graph, best_route, locations, filename="delivery_route.htm
     print(f"Interactive map saved as '{filename}'")
 
     return total_distance
-
 
 def compute_distance_matrix(locations, graph):
     """Compute a matrix of real-world distances between all locations"""
