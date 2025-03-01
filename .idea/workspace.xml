@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="36a349b0-89cf-494c-81dd-3e10d0dd3178" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.venv/Scripts/EXP2.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Scripts/EXP2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.venv/Scripts/delivery_route.html" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Scripts/delivery_route.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +141,7 @@
       <updated>1739842772871</updated>
       <workItem from="1739842775354" duration="1293000" />
       <workItem from="1739847231354" duration="1821000" />
-      <workItem from="1740789136189" duration="2393000" />
+      <workItem from="1740789136189" duration="2739000" />
     </task>
     <servers />
   </component>
