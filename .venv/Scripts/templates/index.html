@@ -1,37 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Route Optimizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007BFF;
+            margin-top: 50px;
+        }
+
+        .container {
+            width: 60%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-label input {
+            margin-right: 10px;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .add-point-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-point-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling for the Optimize Route button */
+        .optimize-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .optimize-btn:hover {
+            background-color: #0056b3;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Delivery Route Optimizer</h1>
+
+    <div class="container">
+        <form method="POST">
+            <!-- Starting Point -->
+            <label for="start">Starting Point:</label>
+            <input type="text" id="start" name="start" required>
+
+            <!-- Delivery Points -->
+            <div id="points"></div>
+            <button type="button" class="add-point-btn" onclick="addInput()">Add Delivery Point</button><br><br>
+
+            <!-- Return to Start Checkbox -->
+            <div class="checkbox-label">
+                <input type="checkbox" name="return_to_start" checked>
+                <label>Return to Start</label>
+            </div><br>
+
+            <!-- Submit Button -->
+            <div class="form-footer">
+                <input type="submit" value="Optimize Route" class="optimize-btn">
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+    </div>
+
     <script>
         let counter = 1;
         function addInput() {
             const div = document.createElement('div');
-            div.innerHTML = `<label>Delivery Point ${counter}:</label> <input name="point${counter}" required><br>`;
+            div.innerHTML = `
+                <label for="point${counter}">Delivery Point ${counter}:</label>
+                <input type="text" name="point${counter}" id="point${counter}" required><br>
+            `;
             document.getElementById('points').appendChild(div);
             counter++;
         }
     </script>
-</head>
-<body>
-    <h1>Delivery Route Optimizer</h1>
-    <form method="POST">
-        <label>Starting Point:</label>
-        <input name="start" required><br><br>
 
-        <div id="points"></div>
-        <button type="button" onclick="addInput()">Add Delivery Point</button><br><br>
-
-        <!-- Return to Start Checkbox -->
-        <label>
-            <input type="checkbox" name="return_to_start" checked>
-            Return to Start
-        </label><br><br>
-
-        <input type="submit" value="Optimize Route">
-    </form>
-
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
 </body>
 </html>
