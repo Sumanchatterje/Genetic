@@ -150,7 +150,6 @@ def visualize_route(coordinates, route, output_file="route_map.html"):
     """
     try:
         import folium
-
         # Create map centered at the first location
         first_loc = coordinates[route[0]]
         m = folium.Map(location=first_loc, zoom_start=10)
@@ -160,10 +159,19 @@ def visualize_route(coordinates, route, output_file="route_map.html"):
             if loc_name in coordinates:
                 coord = coordinates[loc_name]
                 popup_text = f"{i}. {loc_name}"
+
+                # Set colors: Green for Start, Orange for To Start, Blue for others
+                if i == 0:  # Starting Point
+                    icon_color = 'green'
+                elif i == len(route) - 1:  # Return to Start
+                    icon_color = 'orange'
+                else:  # Delivery points
+                    icon_color = 'blue'
+
                 folium.Marker(
                     location=coord,
                     popup=popup_text,
-                    icon=folium.Icon(color='blue' if i == 0 or i == len(route) - 1 else 'red')
+                    icon=folium.Icon(color=icon_color)
                 ).add_to(m)
 
         # Get actual road paths between consecutive points
@@ -193,10 +201,18 @@ def visualize_route(coordinates, route, output_file="route_map.html"):
                             for coord in feature['geometry']['coordinates']:
                                 route_coords.append([coord[1], coord[0]])
 
+                    # Color the route between locations
+                    if i == 0:  # First route from Start
+                        route_color = 'green'
+                    elif i == len(route) - 2:  # Last route to return to Start
+                        route_color = 'orange'
+                    else:  # Routes between delivery points
+                        route_color = 'blue'
+
                     # Draw the actual road route
                     folium.PolyLine(
                         route_coords,
-                        color='blue',
+                        color=route_color,
                         weight=3,
                         opacity=0.7,
                         tooltip=f"Route {start_name} to {end_name}"

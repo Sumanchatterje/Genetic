@@ -6,7 +6,7 @@
         let counter = 1;
         function addInput() {
             const div = document.createElement('div');
-            div.innerHTML = `<label>Delivery Point ${counter}: </label><input name="point${counter}" required><br>`;
+            div.innerHTML = `<label>Delivery Point ${counter}:</label> <input name="point${counter}" required><br>`;
             document.getElementById('points').appendChild(div);
             counter++;
         }
@@ -17,10 +17,19 @@
     <form method="POST">
         <label>Starting Point:</label>
         <input name="start" required><br><br>
+
         <div id="points"></div>
         <button type="button" onclick="addInput()">Add Delivery Point</button><br><br>
+
+        <!-- Return to Start Checkbox -->
+        <label>
+            <input type="checkbox" name="return_to_start" checked>
+            Return to Start
+        </label><br><br>
+
         <input type="submit" value="Optimize Route">
     </form>
+
     {% if error %}
         <p style="color: red;">{{ error }}</p>
     {% endif %}

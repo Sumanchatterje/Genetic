@@ -25,12 +25,15 @@ def index():
         if len(locations) <= 1:
             return render_template("index.html", error="Please enter at least one delivery point.")
 
+        # Check if "return to start" checkbox was selected
+        return_to_start = 'return_to_start' in request.form
+
         # Geocode locations
         coordinates = {k: geocode_location(v) for k, v in locations.items()}
         distance_matrix = get_distance_matrix(coordinates)
 
         # Setup GA
-        toolbox = setup_ga_toolbox(locations, coordinates, road_distance, distance_matrix)
+        toolbox = setup_ga_toolbox(locations, coordinates, road_distance, distance_matrix, return_to_start)
         population = toolbox.population(n=100)
 
         # Run GA
@@ -57,7 +60,9 @@ def index():
 
         best_indices = tools.selBest(population, 1)[0]
         location_keys = list(locations.keys())[1:]  # Skip START
-        best_route = ['START'] + [location_keys[i] for i in best_indices] + ['START']
+        best_route = ['START'] + [location_keys[i] for i in best_indices]
+        if return_to_start:
+            best_route.append('START')
         total_distance = toolbox.evaluate(best_indices)[0]
 
         # Visualize
