@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36a349b0-89cf-494c-81dd-3e10d0dd3178" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.venv/Scripts/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.venv/Scripts/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.venv/Scripts/templates/result.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/Scripts/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/Scripts/app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +198,7 @@
       <workItem from="1740960634572" duration="10000" />
       <workItem from="1741033805229" duration="73000" />
       <workItem from="1741033921939" duration="12000" />
-      <workItem from="1744715227383" duration="10921000" />
+      <workItem from="1744715227383" duration="11264000" />
     </task>
     <servers />
   </component>
@@ -223,7 +220,7 @@
     <SUITE FILE_PATH="coverage/Genetic$ok.coverage" NAME="ok Coverage Results" MODIFIED="1744722459006" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
     <SUITE FILE_PATH="coverage/Genetic$EXP.coverage" NAME="EXP Coverage Results" MODIFIED="1744717568571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
     <SUITE FILE_PATH="coverage/Genetic$DISPLACEMENT.coverage" NAME="DISPLACEMENT Coverage Results" MODIFIED="1739843574309" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
-    <SUITE FILE_PATH="coverage/Genetic$app.coverage" NAME="app Coverage Results" MODIFIED="1744726884580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
+    <SUITE FILE_PATH="coverage/Genetic$app.coverage" NAME="app Coverage Results" MODIFIED="1744727007981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
     <SUITE FILE_PATH="coverage/Genetic$EXP2.coverage" NAME="EXP2 Coverage Results" MODIFIED="1744721367192" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
     <SUITE FILE_PATH="coverage/Genetic$main.coverage" NAME="main Coverage Results" MODIFIED="1744726117873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv/Scripts" />
   </component>

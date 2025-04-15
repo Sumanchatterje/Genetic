@@ -6,15 +6,24 @@ import random
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # Get location inputs from form
+        # Get starting location
         locations = {'START': request.form['start']}
-        for label in ['B', 'C', 'D', 'E']:
-            loc = request.form.get(label)
-            if loc:
-                locations[label] = loc
+
+        # Dynamically collect delivery points
+        count = 1
+        while True:
+            loc = request.form.get(f'point{count}')
+            if not loc:
+                break
+            locations[f'P{count}'] = loc
+            count += 1
+
+        if len(locations) <= 1:
+            return render_template("index.html", error="Please enter at least one delivery point.")
 
         # Geocode locations
         coordinates = {k: geocode_location(v) for k, v in locations.items()}
@@ -32,10 +41,10 @@ def index():
             offspring = toolbox.select(population, len(population))
             offspring = list(map(toolbox.clone, offspring))
             for i in range(0, len(offspring), 2):
-                if random.random() < 0.7 and i+1 < len(offspring):
-                    toolbox.mate(offspring[i], offspring[i+1])
+                if random.random() < 0.7 and i + 1 < len(offspring):
+                    toolbox.mate(offspring[i], offspring[i + 1])
                     del offspring[i].fitness.values
-                    del offspring[i+1].fitness.values
+                    del offspring[i + 1].fitness.values
             for i in range(len(offspring)):
                 if random.random() < 0.2:
                     toolbox.mutate(offspring[i])
@@ -47,7 +56,7 @@ def index():
             population[:] = offspring
 
         best_indices = tools.selBest(population, 1)[0]
-        location_keys = list(locations.keys())[1:]  # skip 'START'
+        location_keys = list(locations.keys())[1:]  # Skip START
         best_route = ['START'] + [location_keys[i] for i in best_indices] + ['START']
         total_distance = toolbox.evaluate(best_indices)[0]
 
@@ -57,3 +66,7 @@ def index():
         return render_template("result.html", route=best_route, distance=total_distance)
 
     return render_template("index.html")
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

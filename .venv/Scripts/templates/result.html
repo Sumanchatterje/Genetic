@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Optimized Route</title>
+    <title>Optimized Route</title>
 </head>
 <body>
-  <h2>Best Route:</h2>
-  <p>{{ route }}</p>
-  <h3>Total Distance: {{ distance | round(2) }} meters</h3>
-  <iframe src="/static/optimized_route_map.html" width="100%" height="600px"></iframe>
+    <h2>Optimized Route</h2>
+    <ul>
+        {% for loc in route %}
+            <li>{{ loc }}</li>
+        {% endfor %}
+    </ul>
+    <p><strong>Total Distance:</strong> {{ distance | round(2) }} meters</p>
+    <iframe src="{{ url_for('static', filename='optimized_route_map.html') }}" width="100%" height="500px"></iframe>
+    <br><a href="/">Try another route</a>
 </body>
 </html>

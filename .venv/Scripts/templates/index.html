@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Route Optimizer</title>
+    <title>Route Optimizer</title>
+    <script>
+        let counter = 1;
+        function addInput() {
+            const div = document.createElement('div');
+            div.innerHTML = `<label>Delivery Point ${counter}: </label><input name="point${counter}" required><br>`;
+            document.getElementById('points').appendChild(div);
+            counter++;
+        }
+    </script>
 </head>
 <body>
-  <h2>Enter Delivery Locations</h2>
-  <form method="post">
-    <label>Starting Point:</label><input type="text" name="start" required><br>
-    <label>Location B:</label><input type="text" name="B"><br>
-    <label>Location C:</label><input type="text" name="C"><br>
-    <label>Location D:</label><input type="text" name="D"><br>
-    <label>Location E:</label><input type="text" name="E"><br>
-    <button type="submit">Optimize</button>
-  </form>
+    <h1>Delivery Route Optimizer</h1>
+    <form method="POST">
+        <label>Starting Point:</label>
+        <input name="start" required><br><br>
+        <div id="points"></div>
+        <button type="button" onclick="addInput()">Add Delivery Point</button><br><br>
+        <input type="submit" value="Optimize Route">
+    </form>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
 </body>
 </html>
