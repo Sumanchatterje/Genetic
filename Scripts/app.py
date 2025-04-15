@@ -3,7 +3,7 @@ from geo_utils import geocode_location, road_distance, get_distance_matrix, visu
 from genetic_optimizer import setup_ga_toolbox
 from deap import tools
 import random
-
+import socket
 app = Flask(__name__)
 
 
@@ -74,4 +74,12 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Get local IP addresses
+    hostname = socket.gethostname()
+    local_ip = socket.gethostbyname(hostname)
+
+    print("Server is running. You can access it at:")
+    print(f"  → http://127.0.0.1:5000 (localhost)")
+    print(f"  → http://{local_ip}:5000 (LAN)")
+
+    app.run(host='0.0.0.0', port=5000, debug=True)

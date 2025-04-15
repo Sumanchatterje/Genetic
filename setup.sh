@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "🔧 Creating virtual environment..."
-python3 -m venv .venv
+python -m venv .venv
 
 echo "✅ Virtual environment created."
 
