@@ -1,18 +1,62 @@
 ```mermaid
-graph TD
+flowchart LR
 
-    A(["START: Guest Seated"]) --> B["1.2/1.3: Server Takes Order & Inputs Items"]
-    B --> C["1.4: Server Sends Order to Kitchen (Status: Pending)"]
+    %% --- Core Modules ---
+    subgraph FOH["Front of House (POS)"]
+        A["Guest Arrival / Reservation Check"]
+        B["Table Assignment"]
+        C["Order Entry (POS)"]
+        D["Payment Processing"]
+    end
 
-    C --> D["2.1: KDS Receives Order / Cook Acknowledges Prep"]
-    D --> E["2.2: Cook Marks Order as Ready"]
-    E --> F["2.3: Server Notified & Picks Up Food"]
+    subgraph BOH["Back of House (Kitchen Display System)"]
+        E["KDS Receives Order"]
+        F["Food Preparation In-Progress"]
+        G["Order Marked Ready"]
+    end
 
-    F --> G["3.2: Server Requests Check / System Calculates Total"]
-    G --> H{"3.3: Payment Successful?"}
+    subgraph INV["Inventory Management"]
+        H["Stock Level Check"]
+        I["Ingredient Deduction per Order"]
+        J["Low-Stock Alerts"]
+    end
 
-    H -- YES --> I["3.4: System Finalizes Transaction (Order Status: Paid)"]
-    H -- NO --> G
+    subgraph CRM["CRM / Reservations"]
+        K["Online Reservation"]
+        L["Walk-In Waitlist"]
+        M["Customer Profile Lookup"]
+    end
 
-    I --> J(["END: FOH Clears Table / Table Status Available"])
+    subgraph REP["Reporting & Analytics"]
+        N["Daily Sales Totals"]
+        O["Category-wise Sales"]
+        P["Average Check Size"]
+    end
+
+    %% --- Flow Connections ---
+    A -->|Check Reservation| K
+    K --> B
+    A --> L
+    L --> B
+
+    B --> C
+    C --> E
+
+    %% BOH Flow
+    E --> F --> G
+
+    %% Food Ready → FOH
+    G --> C
+
+    %% Payment
+    C --> D
+
+    %% Inventory Sync
+    C --> H
+    H --> I --> J
+
+    %% Reporting Triggers
+    D --> N
+    D --> O
+    D --> P
 ```
