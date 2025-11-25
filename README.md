@@ -1,62 +1,45 @@
 ```mermaid
-flowchart LR
+flowchart TD
 
-    %% --- Core Modules ---
-    subgraph FOH["Front of House (POS)"]
-        A["Guest Arrival / Reservation Check"]
-        B["Table Assignment"]
-        C["Order Entry (POS)"]
-        D["Payment Processing"]
-    end
+    %% --- Start ---
+    A([Start: Guest Arrives]) --> B{Reservation Exists?}
 
-    subgraph BOH["Back of House (Kitchen Display System)"]
-        E["KDS Receives Order"]
-        F["Food Preparation In-Progress"]
-        G["Order Marked Ready"]
-    end
+    %% --- Reservation Path ---
+    B -- Yes --> C["Retrieve Reservation"]
+    B -- No --> D["Add to Walk-in / Waitlist"]
 
-    subgraph INV["Inventory Management"]
-        H["Stock Level Check"]
-        I["Ingredient Deduction per Order"]
-        J["Low-Stock Alerts"]
-    end
+    C --> E["Assign Table"]
+    D --> E
 
-    subgraph CRM["CRM / Reservations"]
-        K["Online Reservation"]
-        L["Walk-In Waitlist"]
-        M["Customer Profile Lookup"]
-    end
+    %% --- Ordering ---
+    E --> F["Server Takes Order (POS)"]
+    F --> G["POS Sends Order to Kitchen"]
 
-    subgraph REP["Reporting & Analytics"]
-        N["Daily Sales Totals"]
-        O["Category-wise Sales"]
-        P["Average Check Size"]
-    end
+    %% --- Kitchen Flow ---
+    G --> H["KDS Displays Order"]
+    H --> I["Kitchen Prepares Food"]
+    I --> J["Kitchen Marks Order Ready"]
 
-    %% --- Flow Connections ---
-    A -->|Check Reservation| K
-    K --> B
-    A --> L
-    L --> B
+    %% --- Serving ---
+    J --> K["Server Serves Food"]
 
-    B --> C
-    C --> E
+    %% --- Payment Decision ---
+    K --> L{Guest Requests Bill?}
+    L -- No --> K
+    L -- Yes --> M["Generate Bill & Calculate Total"]
 
-    %% BOH Flow
-    E --> F --> G
+    %% --- Payment Handling ---
+    M --> N{Payment Successful?}
+    N -- No --> M
+    N -- Yes --> O["Close Order (Paid)"]
 
-    %% Food Ready → FOH
-    G --> C
+    %% --- Inventory Sync ---
+    F --> P["Deduct Ingredients from Inventory"]
+    P --> Q{Low Stock?}
+    Q -- Yes --> R["Trigger Low-Stock Alert"]
+    Q -- No --> S["Continue Operations"]
 
-    %% Payment
-    C --> D
-
-    %% Inventory Sync
-    C --> H
-    H --> I --> J
-
-    %% Reporting Triggers
-    D --> N
-    D --> O
-    D --> P
+    %% --- Reporting ---
+    O --> T["Update Daily Sales Report"]
+    T --> U([End: Table Freed])
 ```
