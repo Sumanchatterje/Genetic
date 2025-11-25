@@ -1,45 +1,16 @@
 ```mermaid
 flowchart TD
 
-    %% --- Start ---
-    A([Start: Guest Arrives]) --> B{Reservation Exists?}
+    Customer -->|Order Details| POS["(1.0) POS / Order Management"]
+    POS -->|Order Info| KDS["(2.0) Kitchen Display System"]
+    POS -->|Payment Info| Reporting["(5.0) Reporting & Analytics"]
 
-    %% --- Reservation Path ---
-    B -- Yes --> C["Retrieve Reservation"]
-    B -- No --> D["Add to Walk-in / Waitlist"]
+    POS -->|Ingredient Usage| Inventory["(3.0) Inventory System"]
+    Inventory -->|Low Stock Alert| Supplier["Supplier"]
 
-    C --> E["Assign Table"]
-    D --> E
+    Customer -->|Reservation Request| CRM["(4.0) CRM / Reservations"]
+    CRM -->|Reservation Status| Customer
 
-    %% --- Ordering ---
-    E --> F["Server Takes Order (POS)"]
-    F --> G["POS Sends Order to Kitchen"]
-
-    %% --- Kitchen Flow ---
-    G --> H["KDS Displays Order"]
-    H --> I["Kitchen Prepares Food"]
-    I --> J["Kitchen Marks Order Ready"]
-
-    %% --- Serving ---
-    J --> K["Server Serves Food"]
-
-    %% --- Payment Decision ---
-    K --> L{Guest Requests Bill?}
-    L -- No --> K
-    L -- Yes --> M["Generate Bill & Calculate Total"]
-
-    %% --- Payment Handling ---
-    M --> N{Payment Successful?}
-    N -- No --> M
-    N -- Yes --> O["Close Order (Paid)"]
-
-    %% --- Inventory Sync ---
-    F --> P["Deduct Ingredients from Inventory"]
-    P --> Q{Low Stock?}
-    Q -- Yes --> R["Trigger Low-Stock Alert"]
-    Q -- No --> S["Continue Operations"]
-
-    %% --- Reporting ---
-    O --> T["Update Daily Sales Report"]
-    T --> U([End: Table Freed])
+    POS --> CRM
+    Reporting --> Manager["Manager"]
 ```
