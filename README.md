@@ -1,34 +1,42 @@
 ```mermaid
-flowchart TD
+flowchart LR
 
-    %% External Entity
-    Customer["Customer"]
+    %% Actors
+    A[\"Customer\"]
+    B[\"Server / FOH Staff\"]
+    C[\"Kitchen Staff\"]
+    D[\"Restaurant Manager\"]
+    E[\"Inventory Staff\"]
 
-    %% Subprocesses
-    A["(1.1) Capture Order"]
-    B["(1.2) Validate Order Items"]
-    C["(1.3) Send Order to Kitchen"]
-    D["(1.4) Generate Bill"]
-    E["(1.5) Process Payment"]
-    F["(1.6) Update Table Status"]
 
-    %% Data Stores
-    MenuDB[("Menu Database")]
-    OrderDB[("Order Database")]
-    PaymentDB[("Payment Records")]
+    %% Use Cases
+    UC1((Place Order))
+    UC2((Make Payment))
+    UC3((View Menu))
+    UC4((Serve Food))
+    UC5((Prepare Order))
+    UC6((Mark Order Ready))
+    UC7((Check Reservations))
+    UC8((Manage Waitlist))
+    UC9((Generate Sales Report))
+    UC10((Update Inventory))
+    UC11((Check Stock Levels))
 
-    %% Flow
-    Customer --> A
-    A --> B
-    B -->|Valid Items| C
-    B -->|Invalid Items| A
+    %% Relationships
+    A --> UC1
+    A --> UC2
+    A --> UC3
 
-    B --> MenuDB
-    C --> OrderDB
+    B --> UC1
+    B --> UC4
+    B --> UC7
+    B --> UC8
 
-    Customer --> D
-    D --> E --> PaymentDB
+    C --> UC5
+    C --> UC6
 
-    E --> F
-    F --> Customer
+    D --> UC9
+
+    E --> UC10
+    E --> UC11
 ```
