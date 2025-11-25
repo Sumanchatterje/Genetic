@@ -1,16 +1,34 @@
 ```mermaid
 flowchart TD
 
-    Customer -->|Order Details| POS["(1.0) POS / Order Management"]
-    POS -->|Order Info| KDS["(2.0) Kitchen Display System"]
-    POS -->|Payment Info| Reporting["(5.0) Reporting & Analytics"]
+    %% External Entity
+    Customer["Customer"]
 
-    POS -->|Ingredient Usage| Inventory["(3.0) Inventory System"]
-    Inventory -->|Low Stock Alert| Supplier["Supplier"]
+    %% Subprocesses
+    A["(1.1) Capture Order"]
+    B["(1.2) Validate Order Items"]
+    C["(1.3) Send Order to Kitchen"]
+    D["(1.4) Generate Bill"]
+    E["(1.5) Process Payment"]
+    F["(1.6) Update Table Status"]
 
-    Customer -->|Reservation Request| CRM["(4.0) CRM / Reservations"]
-    CRM -->|Reservation Status| Customer
+    %% Data Stores
+    MenuDB[("Menu Database")]
+    OrderDB[("Order Database")]
+    PaymentDB[("Payment Records")]
 
-    POS --> CRM
-    Reporting --> Manager["Manager"]
+    %% Flow
+    Customer --> A
+    A --> B
+    B -->|Valid Items| C
+    B -->|Invalid Items| A
+
+    B --> MenuDB
+    C --> OrderDB
+
+    Customer --> D
+    D --> E --> PaymentDB
+
+    E --> F
+    F --> Customer
 ```
