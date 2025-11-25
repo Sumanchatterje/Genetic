@@ -1,42 +1,65 @@
 ```mermaid
 flowchart LR
+    %% ========== ACTORS ==========
+    Customer(["<<Actor>> Customer"])
+    Server(["<<Actor>> Server / FOH"])
+    Kitchen(["<<Actor>> Kitchen Staff"])
+    Manager(["<<Actor>> Manager"])
+    InventoryStaff(["<<Actor>> Inventory Staff"])
 
-    %% Actors
-    A[\"Customer\"]
-    B[\"Server / FOH Staff\"]
-    C[\"Kitchen Staff\"]
-    D[\"Restaurant Manager\"]
-    E[\"Inventory Staff\"]
+    %% ========== SYSTEM BOUNDARY ==========
+    subgraph RMS["Restaurant Management System"]
+        
+        %% --- Reservation & Seating ---
+        UC_Reserve((Make Reservation))
+        UC_ViewMenu((View Menu))
+        UC_AssignTable((Assign Table))
 
+        %% --- Order Processing ---
+        UC_PlaceOrder((Place Order))
+        UC_ModifyOrder((Modify Order))
+        UC_SendToKitchen((Send Order to KDS))
 
-    %% Use Cases
-    UC1((Place Order))
-    UC2((Make Payment))
-    UC3((View Menu))
-    UC4((Serve Food))
-    UC5((Prepare Order))
-    UC6((Mark Order Ready))
-    UC7((Check Reservations))
-    UC8((Manage Waitlist))
-    UC9((Generate Sales Report))
-    UC10((Update Inventory))
-    UC11((Check Stock Levels))
+        %% --- Kitchen Processing ---
+        UC_PrepFood((Prepare Food))
+        UC_ReadyFood((Mark Order Ready))
 
-    %% Relationships
-    A --> UC1
-    A --> UC2
-    A --> UC3
+        %% --- Serving & Billing ---
+        UC_ServeFood((Serve Food))
+        UC_GenerateBill((Generate Bill))
+        UC_ProcessPayment((Process Payment))
 
-    B --> UC1
-    B --> UC4
-    B --> UC7
-    B --> UC8
+        %% --- Inventory ---
+        UC_UpdateInventory((Update Inventory))
+        UC_CheckStock((Check Stock Levels))
 
-    C --> UC5
-    C --> UC6
+        %% --- Reporting ---
+        UC_GenerateReports((Generate Sales Reports))
 
-    D --> UC9
+        %% --- Relationships inside system ---
+        UC_PlaceOrder --> UC_SendToKitchen
+        UC_GenerateBill --> UC_ProcessPayment
+        
+    end
 
-    E --> UC10
-    E --> UC11
+    %% ========== ACTOR → USE CASE LINKS ==========
+    Customer --> UC_Reserve
+    Customer --> UC_ViewMenu
+    Customer --> UC_PlaceOrder
+    Customer --> UC_ProcessPayment
+
+    Server --> UC_AssignTable
+    Server --> UC_PlaceOrder
+    Server --> UC_ModifyOrder
+    Server --> UC_ServeFood
+    Server --> UC_GenerateBill
+    Server --> UC_ProcessPayment
+
+    Kitchen --> UC_PrepFood
+    Kitchen --> UC_ReadyFood
+
+    InventoryStaff --> UC_UpdateInventory
+    InventoryStaff --> UC_CheckStock
+
+    Manager --> UC_GenerateReports
 ```
