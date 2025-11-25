@@ -1,3 +1,4 @@
+```mermaid
 graph TD
 
     %% --- 1. Initiation and Order Capture (FOH/POS) ---
@@ -18,3 +19,4 @@ graph TD
     H -- NO --> G
 
     I --> J([END: FOH Clears Table / Table Status Available])
+```
